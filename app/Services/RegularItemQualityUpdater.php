@@ -13,6 +13,7 @@ class RegularItemQualityUpdater implements QualityUpdaterInterface
         } else {
             $item->quality = max($item->quality - 1, 0);
         }
+    
         $item->sellIn--;
     }
 }
