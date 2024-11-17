@@ -16,9 +16,15 @@ use App\Http\Controllers\ImageUploadController;
 |
 */
 Route::group(['name' => 'api'], function () {
+    Route::get('/ping', function() {
+        return response()->json([
+            'status' => 'pong',
+        ]);
+    });
+
     Route::post('/upload-images', [ImageUploadController::class, 'upload']);
     Route::get('/items', [ItemController::class, 'all']);
-    
+
     Route::post('/decrease-sellin', [ItemController::class, 'decreaseSellIn']);
     //TODO: write cronjob for auto decreasing SellIn at the end of every single day
 
