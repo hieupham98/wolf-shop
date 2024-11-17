@@ -30,6 +30,7 @@ services:
     volumes: 
       -  ${APP_FOLDER}:/app
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/.htpasswd:/etc/nginx/secret/.htpasswd
     working_dir: /app
     labels:
       - traefik.enable=true
