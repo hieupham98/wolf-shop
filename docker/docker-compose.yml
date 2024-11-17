@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:2.8
+    restart: unless-stopped
+    command:
+    - --api.dashboard=true
+    - --entrypoints.http.address=:80
+    - --providers.docker
+    - --providers.docker.network=${COMPOSE_PROJECT_NAME}_frontend
+    - --providers.docker.watch=true
+    - --providers.docker.exposedbydefault=false
+    ports:
+    - ${PORT:-80}:80
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN}`)
+    - traefik.http.routers.traefik.service=api@internal
+    - traefik.http.middlewares.traefik-dashboard.redirectRegex.regex=/
+    - traefik.http.middlewares.traefik-dashboard.redirectRegex.replacement=/dashboard/
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  backend:
+    image: 'nginx:stable'
+    expose:
+      - "80"
+      - "443"
+      - "9000"
+    volumes: 
+      -  ${APP_FOLDER}:/app
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /app
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.backend.loadbalancer.server.port=80
+      - "traefik.http.routers.backend.tls=false"
+      - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)
+  
+  php:
+    build:
+      dockerfile: ./Dockerfile
+      target: php8
+    restart: always
+    volumes:
+      -  ${APP_FOLDER}:/app
+    working_dir: /app
+
+  mariadb:
+      image: mariadb:10
+      restart: always
+      platform: linux/amd64
+      volumes:
+        - ${PATH_DATA:-./data}/mariadb:/var/lib/mysql
+      environment:
+        MYSQL_DATABASE: ${DB_DATABASE}
+        MYSQL_USER: ${DB_USERNAME}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      ports:
+        - "3307:3306"
