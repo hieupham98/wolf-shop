@@ -186,3 +186,18 @@ The API is protected with Basic Authentication. Use the following credentials to
 Username: developer
 Password: secret
 ```
+
+Postman workspace: 
+
+Set base_url = http://wolf-shop.localhost:8080/
+
+```
+https://dark-firefly-537126.postman.co/workspace/Wolf-shop-project~1ac559d0-f1bd-4377-93ef-376fee629207/collection/14010997-0e1b9ad4-e38d-45e2-8263-b31fb820e3ed?action=share&creator=14010997
+```
+## TODO
+
+```
+We can configure CI CD with github action and fluxcd
+
+furthermore, we can use k8s for scaling server automatically 
+```
