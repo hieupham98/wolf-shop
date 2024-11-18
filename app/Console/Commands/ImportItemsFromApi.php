@@ -59,7 +59,7 @@ class ImportItemsFromApi extends Command
      */
     protected function updateItemQuality(Item $item)
     {
-        $item->quality = rand(1, 50); 
+        $item->quality = 30; 
         $item->save();
 
         $this->info("Updated Quality for item: {$item->name}");
